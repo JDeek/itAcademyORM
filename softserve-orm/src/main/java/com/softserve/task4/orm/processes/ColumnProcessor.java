@@ -27,24 +27,7 @@ public class ColumnProcessor {
     }
 
     public static ColumnProcessor fromField(Field field, String vars){
-        Class fieldType = field.getType();
-        ColumnType columnType;
-
-        if (fieldType == Boolean.TYPE || (fieldType == Boolean.class)){
-            columnType = ColumnType.BOOL;
-        }else if ((fieldType == Integer.TYPE )||(fieldType == Integer.class)){
-            columnType = ColumnType.INT;
-        }else if (fieldType == Double.TYPE || fieldType == Double.class){
-            columnType = ColumnType.DOUBLE;
-        }else if (fieldType == Float.TYPE || fieldType == Float.class){
-            columnType = ColumnType.FLOAT;
-        }else if (fieldType == Character.TYPE || fieldType == Character.class){
-            columnType =ColumnType.CHAR;
-        }else if (fieldType == String.class){
-            columnType = ColumnType.VARCHAR;
-        }else {
-            return null;
-        }
+        ColumnType columnType = checkFieldType(field);
 
         ColumnProcessor columnProcessor = new ColumnProcessor();
         columnProcessor.columnType = columnType;
@@ -54,25 +37,8 @@ public class ColumnProcessor {
         columnProcessor.isPrimaryKey = field.isAnnotationPresent(PrimaryKey.class);
         columnProcessor.hasDefaultValue = field.isAnnotationPresent(Default.class);
 
-        if (columnProcessor.hasDefaultValue){
-            Default defaultAnnotation = field.getAnnotation(Default.class);
-            columnProcessor.defaultValue = defaultAnnotation.value();
-        }
-        columnProcessor.maxLength = TableProcessor.getDefaultMaxLength(field.getDeclaringClass());
-        if (field.isAnnotationPresent(MaxLength.class)){
-            MaxLength maxLengthAnnotation = field.getAnnotation(MaxLength.class);
-            columnProcessor.maxLength = maxLengthAnnotation.value();
-        }
-        if (columnType == ColumnType.VARCHAR && columnProcessor.maxLength == Integer.MAX_VALUE){
-            columnProcessor.columnType = ColumnType.TEXT;
-        }
-        if (field.isAnnotationPresent(com.softserve.task4.orm.annotations.Column.class)){
-            com.softserve.task4.orm.annotations.Column columnName = field.getAnnotation(com.softserve.task4.orm.annotations.Column.class);
-            String name = columnName.value();
-            if (!name.trim().isEmpty()){
-                columnProcessor.name = name;
-            }
-        }
+        columnProcessor = checkAnnotation(field, columnProcessor);
+
         return columnProcessor;
     }
 
@@ -95,6 +61,52 @@ public class ColumnProcessor {
                 return defaultValue;
         }
         return null;
+    }
+
+    private static ColumnType checkFieldType(Field field){
+        Class fieldType = field.getType();
+        ColumnType columnType;
+
+        if (fieldType == Boolean.TYPE || (fieldType == Boolean.class)){
+            columnType = ColumnType.BOOL;
+        }else if ((fieldType == Integer.TYPE )||(fieldType == Integer.class)){
+            columnType = ColumnType.INT;
+        }else if (fieldType == Double.TYPE || fieldType == Double.class){
+            columnType = ColumnType.DOUBLE;
+        }else if (fieldType == Float.TYPE || fieldType == Float.class){
+            columnType = ColumnType.FLOAT;
+        }else if (fieldType == Character.TYPE || fieldType == Character.class){
+            columnType =ColumnType.CHAR;
+        }else if (fieldType == String.class){
+            columnType = ColumnType.VARCHAR;
+        }else {
+            return null;
+        }
+        return  columnType;
+    }
+
+    private static ColumnProcessor checkAnnotation(Field field, ColumnProcessor columnProcessor){
+        ColumnType columnType = checkFieldType(field);
+        if (columnProcessor.hasDefaultValue){
+            Default defaultAnnotation = field.getAnnotation(Default.class);
+            columnProcessor.defaultValue = defaultAnnotation.value();
+        }
+        columnProcessor.maxLength = TableProcessor.getDefaultMaxLength(field.getDeclaringClass());
+        if (field.isAnnotationPresent(MaxLength.class)){
+            MaxLength maxLengthAnnotation = field.getAnnotation(MaxLength.class);
+            columnProcessor.maxLength = maxLengthAnnotation.value();
+        }
+        if (columnType == ColumnType.VARCHAR && columnProcessor.maxLength == Integer.MAX_VALUE){
+            columnProcessor.columnType = ColumnType.TEXT;
+        }
+        if (field.isAnnotationPresent(com.softserve.task4.orm.annotations.Column.class)){
+            com.softserve.task4.orm.annotations.Column columnName = field.getAnnotation(com.softserve.task4.orm.annotations.Column.class);
+            String name = columnName.value();
+            if (!name.trim().isEmpty()){
+                columnProcessor.name = name;
+            }
+        }
+        return  columnProcessor;
     }
 
     public String toString(){

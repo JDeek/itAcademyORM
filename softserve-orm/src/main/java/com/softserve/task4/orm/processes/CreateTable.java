@@ -38,7 +38,7 @@ public class CreateTable {
     private String generateCreateTableQuery() throws Exception {
         String tableName = table == null || table.isEmpty() ? TableProcessor.getTableName(clss) : table;
 
-        List<ColumnProcessor> columnProcessors = new ArrayList<ColumnProcessor>();
+        List<ColumnProcessor> columnProcessors = new ArrayList<>();
         Field[] fields = clss.getFields();
 
         for (Field field : fields){
@@ -60,7 +60,7 @@ public class CreateTable {
         int primaryKeys = 0;
         String primaryKey = "";
 
-        List<String> columnStringList = new ArrayList<String>();
+        List<String> columnStringList = new ArrayList<>();
 
         for (ColumnProcessor columnProcessor : columnProcessors){
             if (columnProcessor.isPrimaryKey || columnProcessor.isAutoIncrement){
@@ -71,7 +71,7 @@ public class CreateTable {
         }
 
         if (primaryKeys > 1) throw new Exception();
-        String footer = "";
+        String footer;
         if (primaryKeys == 1){
             footer = Const.STRING_PRIMARY_KEY +"`" +primaryKey + "`" + "))";
         }else {
@@ -83,7 +83,7 @@ public class CreateTable {
 
     public PreparedStatement toPrepared() throws Exception {
         try {
-            PreparedStatement preparedStatement = null;
+            PreparedStatement preparedStatement;
             preparedStatement = connection.prepareStatement(generateCreateTableQuery());
             int index= 0;
 
