@@ -47,7 +47,7 @@ public class InsertColumns {
 private String generateInsertQuery() throws Exception{
     String tableName = (table == null) || (table.isEmpty()) ? TableProcessor.getTableName(clss) : table;
 
-    List<String> setValueStringList = new ArrayList();
+    List<String> setValueStringList = new ArrayList<>();
     Field[] fields = clss.getFields();
 
     for (Field field : fields) {
@@ -61,9 +61,7 @@ private String generateInsertQuery() throws Exception{
 
                     setValueStringList.add(setValueString);
                 } else {
-                    Object value = null;
-
-                    value = field.get(object);
+                    Object value = field.get(object);
 
                     if ((value != null) || (!column.hasDefaultValue)) {
                         if ((column.isNotNull) && (value == null)) {
@@ -105,13 +103,12 @@ private String generateInsertQuery() throws Exception{
 
     public PreparedStatement toPreparedStatement() throws Exception {
         try {
-            PreparedStatement preparedStatement = null;
+            PreparedStatement preparedStatement;
             preparedStatement = connection.prepareStatement(generateInsertQuery());
 
             for (ColumnProcessor column : valueMap.keySet()) {
                 Object object = valueMap.get(column);
-
-                preparedStatement.setObject((Integer) indexMap.get(column), object);
+                preparedStatement.setObject(indexMap.get(column), object);
             }
             return preparedStatement;
         } catch (Exception e) {

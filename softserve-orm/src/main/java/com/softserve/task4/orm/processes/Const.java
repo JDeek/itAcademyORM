@@ -30,7 +30,8 @@ public class Const {
     public static final String STRING_AUTO_INCREMENT = "AUTO_INCREMENT  ";
     public static final String STRING_NOT_NULL = " NOT NULL ";
     public static final String STRING_DEFAULT = " DEFAULT ?";
-    public static final String STRING_VAR = "?";
+    public static final String STRING_VAR = " ? ";
     public static final String STRING_NULL = "null";
     public static final String STRING_SET =" SET " ;
+    public static final String STRING_WHERE = " WHERE ";
 }

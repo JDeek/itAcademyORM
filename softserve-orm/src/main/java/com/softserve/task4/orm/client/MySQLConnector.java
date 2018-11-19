@@ -2,6 +2,7 @@ package com.softserve.task4.orm.client;
 
 import com.softserve.task4.orm.processes.CreateTable;
 import com.softserve.task4.orm.processes.InsertColumns;
+import com.softserve.task4.orm.processes.UpdateColumns;
 
 import java.io.FileInputStream;
 import java.sql.Connection;
@@ -45,5 +46,9 @@ public class MySQLConnector {
 
     public void insertValue(Object object) throws  Exception{
         new InsertColumns(connection,object).toPreparedStatement().executeUpdate();
+    }
+
+    public void updateValue(Object object, String[] updateColumnNames, String whereExpr, Object[] whereValues) throws Exception {
+        new UpdateColumns(connection,object,updateColumnNames,whereExpr,whereValues).toPreparedStatement().executeUpdate();
     }
 }

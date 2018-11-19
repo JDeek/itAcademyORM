@@ -1,8 +1,7 @@
 package com.softserve.task4.orm.classes;
 
 import com.softserve.task4.orm.client.MySQLConnector;
-import com.softserve.task4.orm.processes.CreateTable;
-import com.softserve.task4.orm.processes.InsertColumns;
+import com.softserve.task4.orm.processes.UpdateColumns;
 
 import java.sql.Connection;
 
@@ -14,16 +13,20 @@ public class Main {
 
         MySQLConnector client = new MySQLConnector();
         Connection connection = client.connect();
-        String query = new CreateTable(connection,User.class).setTable("users").toSQLString();
-            System.out.println(query);
-            client.createTable(User.class);
-            User user = new User();
-            user.name = "Al";
-            user.email = "gm@com.ua";
-            user.password = "2122231";
-            String query1 = new InsertColumns(connection,User.class).setTableName("users").toSQLString();
-            System.out.println(query1);
-            client.insertValue(user);
-            client.disconnect();
+
+        User user = new User();
+        user.name = "Alexander";
+        user.password = "admin";
+        user.email = "admin-shop@mail.ru";
+        //client.insertValue(user);
+        String query3 = new UpdateColumns(connection, user,
+                new String[] { "user_name"},
+                "user_id=6", new Object[] {"Bogdan"}).toSQLString();
+
+        client.updateValue( user,
+                new String[] {"user_name","user_password","user_email"},
+                "user_id=6", new Object[] {"Alexander","adminadmin","jumper-2017@mail.ru"});
+        System.out.println(query3);
+        client.disconnect();
     }
 }
