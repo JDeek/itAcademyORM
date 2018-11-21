@@ -1,8 +1,8 @@
 package com.softserve.task4.orm.client;
 
-import com.softserve.task4.orm.processes.CreateTable;
-import com.softserve.task4.orm.processes.InsertColumns;
-import com.softserve.task4.orm.processes.UpdateColumns;
+import com.softserve.task4.orm.queries.CreateTable;
+import com.softserve.task4.orm.queries.InsertColumns;
+import com.softserve.task4.orm.queries.UpdateColumns;
 
 import java.io.FileInputStream;
 import java.sql.Connection;
@@ -15,13 +15,13 @@ import java.util.Properties;
  */
 public class MySQLConnector {
 
-    private Connection connection;
-    private Statement statement;
+    private static Connection connection;
+    private static Statement statement;
 
     public MySQLConnector() {
     }
 
-    public Connection connect() throws Exception {
+    public static Connection connect() throws Exception {
         Properties properties = new Properties();
         FileInputStream stream = new FileInputStream("C:\\Gradle\\gradle-4.8.1\\softserve-orm\\src\\main\\resources\\database.properties");
         properties.load(stream);
@@ -40,8 +40,8 @@ public class MySQLConnector {
         connection.close();
     }
 
-    public void createTable(Class clss) throws Exception {
-        new CreateTable(connection,clss).toPrepared().execute();
+    public static void createTable() throws Exception {
+        CreateTable.createTables();
     }
 
     public void insertValue(Object object) throws  Exception{

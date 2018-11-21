@@ -9,11 +9,10 @@ import com.softserve.task4.orm.annotations.*;
 @Table("users")
 public class User {
 
-
     @PrimaryKey
     @AutoIncrement
     @Column("user_id")
-    public int id;
+    public int user_id;
 
     @Column("user_name")
     @NotNull
@@ -44,7 +43,7 @@ public class User {
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.user_id = id;
     }
 
     public void setName(String name) {
